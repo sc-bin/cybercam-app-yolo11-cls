@@ -1,0 +1,8 @@
+Package: cybercam-app-yolo11-cls
+Description: cybercam yolo11-cls demo 
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 5944
+Architecture: all
