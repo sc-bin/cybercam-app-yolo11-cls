@@ -1,1 +1,1 @@
-python cls-cam.py
+python main.py

@@ -1,30 +1,30 @@
 '''
 实验名称：YOLO11检测
-实验平台：核桃派2B
+实验平台：cybercam
 说明：摄像头采集检测
 '''
 
-from walnutpi import YOLO11
+from walnutpi import YOLO11,Display,Sensor,Imgxfer
 import cv2,time
-import k230_display
-k230_display.init()
+Display.init()
 
 #【可选代码】允许Thonny远程运行
 import os
 os.environ["DISPLAY"] = ":0.0"
 
 #加载模型
-path_model = "model/yolo11n-cls-224.kmodel"
+path_model = "./yolo11n-cls-224.kmodel"
 yolo = YOLO11.YOLO11_CLS(path_model,224)
+
+# 使用960p模式，摄像头帧率更高
+sensor = Sensor.Sensor(1280, 960)
+sensor.run()
 
 # 打开摄像头
 cap = cv2.VideoCapture(1)
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
-
-display_width = k230_display.get_width()
-display_height = k230_display.get_height()
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 设置宽度
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 设置长度
@@ -69,4 +69,5 @@ while True:
             2,
         )
 
-    k230_display.show(img)
+    Display.show(img) #显示到屏幕上
+    Imgxfer.push_frame(img) # 发送到ide
