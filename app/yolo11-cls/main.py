@@ -4,7 +4,7 @@
 说明：摄像头采集检测
 '''
 
-from walnutpi import YOLO11,Display,Sensor,Imgxfer
+from walnutpi import kpu,Display,Sensor,IDE
 import cv2,time
 
 #【可选代码】允许Thonny远程运行
@@ -13,7 +13,7 @@ os.environ["DISPLAY"] = ":0.0"
 
 #加载模型
 path_model = "./yolo11n-cls-224.kmodel"
-yolo = YOLO11.YOLO11_CLS(path_model,224)
+yolo = kpu.YOLO11_CLS(path_model,224)
 
 # 初始化屏幕
 Display.init()
@@ -41,9 +41,13 @@ while True:
         print("Can't receive frame (stream end?). Exiting ...")
         break
 
-    if not yolo.is_running:
-        yolo.run_async(img)  # 在后台运行一次检测
-    result = yolo.get_result()  # 获取最新检测结果
+    #非阻塞式推理图片，可以让显示帧率更高些
+    # if not yolo.is_running:
+    #     yolo.run_async(img)  # 在后台运行一次检测
+    # result = yolo.get_result()  # 获取最新检测结果
+
+    # 阻塞式执行目标检测，设置置信度阈值为 0.5，IoU 阈值为 0.45
+    result=yolo.run(img, 0.5, 0.45)
 
     # 将概率最高的类别绘制在图像上
     if result is not None:
@@ -64,4 +68,4 @@ while True:
         )
 
     Display.show(img) #显示到屏幕上
-    Imgxfer.push_frame(img) # 发送到ide
+    IDE.show(img) # 发送到ide窗口内显示
